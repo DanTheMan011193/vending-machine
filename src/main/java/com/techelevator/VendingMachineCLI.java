@@ -4,6 +4,7 @@ import com.techelevator.view.VendingMenu;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Scanner;
 
 
 public class VendingMachineCLI {
@@ -46,7 +47,24 @@ public class VendingMachineCLI {
 		cli.run();
 	}
 
-	public static Map<String, Inventory> stockInventory(File inventory) {
+	/*
+	step 1 - open the scanner
+	step 2 - have the scanner read the csv file
+	step 3 - use the split method to separate the line into individual values
+
+	step 4 - assign the individual values the first value as the map string and their remaining
+	values as the inventory attributes
+
+
+	 */
+
+	private static Map<String, Inventory> stockInventory(File inventory) {
+
+		try (Scanner scanner = new Scanner(System.in)){
+
+		}
+
+
 
 	}
 }
