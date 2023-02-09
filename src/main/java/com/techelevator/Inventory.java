@@ -13,9 +13,9 @@ public class Inventory {
     private final String SOLD_OUT = "SOLD OUT";
 
     //constructor
-    public Inventory(String productName, BigDecimal price, String type) {
+    public Inventory(String productName, String price, String type) {
         this.productName = productName;
-        this.price = price;
+        this.price = new BigDecimal(price);
         this.type = type;
         this.inventoryCount = 5;
         this.soldOut = false;

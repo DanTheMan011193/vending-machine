@@ -3,6 +3,8 @@ package com.techelevator;
 import com.techelevator.view.VendingMenu;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -29,14 +31,33 @@ public class VendingMachineCLI {
 
 	public void run() {
 		boolean running = true;
+		Map<String, Inventory> inventoryStock = new HashMap<>();
+		boolean isInventoryStocked = false;
+
 		while (running) {
+
+			if (!isInventoryStocked) {
+				stockInventory(inventoryStock, "vendingmachine.csv");
+				isInventoryStocked = true;
+			}
+
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
 			// A switch statement could also be used here.  Your choice.
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
+				for (Map.Entry<String, Inventory> item : inventoryStock.entrySet()) {
+					if (item.getValue().getInventoryCount() == 0) {
+						System.out.println(item.getKey() + item.getValue().getProductName() + item.getValue().getPrice() + item.getValue().getSOLD_OUT());
+					} else {
+						System.out.println(item.getKey() + item.getValue().getProductName() + item.getValue().getPrice() + item.getValue().getInventoryCount());
+					}
+				}
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				// do purchase
+				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+				running = false;
 			}
 		}
 	}
@@ -58,13 +79,20 @@ public class VendingMachineCLI {
 
 	 */
 
-	private static Map<String, Inventory> stockInventory(File inventory) {
+	private static Map<String, Inventory> stockInventory(Map<String, Inventory> stock, String inventorySourcePath) {
+		File inventoryFile = new File(inventorySourcePath);
 
-		try (Scanner scanner = new Scanner(System.in)){
+		try (Scanner fileInput = new Scanner(inventoryFile)){
 
+			while(fileInput.hasNextLine()) {
+				String line = fileInput.nextLine();
+				String[] inventoryData = line.split("\\|");
+				stock.put(inventoryData[0],
+						new Inventory(inventoryData[1], inventoryData[2], inventoryData[3]));
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
 		}
-
-
-
+		return stock;
 	}
 }
