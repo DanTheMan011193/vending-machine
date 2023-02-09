@@ -2,6 +2,8 @@ package com.techelevator;
 
 import com.techelevator.view.VendingMenu;
 
+import java.io.File;
+import java.util.Map;
 
 
 public class VendingMachineCLI {
@@ -42,5 +44,9 @@ public class VendingMachineCLI {
 		VendingMenu menu = new VendingMenu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
 		cli.run();
+	}
+
+	public static Map<String, Inventory> stockInventory(File inventory) {
+
 	}
 }
