@@ -53,7 +53,7 @@ public class VendingMachineCLI implements MonetaryTransactions {
 					if (item.getValue().getInventoryCount() == 0) {
 						System.out.println(item.getKey() + item.getValue().getProductName() + item.getValue().getPrice() + item.getValue().getSOLD_OUT());
 					} else {
-						System.out.println(item.getKey() + item.getValue().getProductName() + item.getValue().getPrice() + item.getValue().getInventoryCount());
+						System.out.println(item.getKey() + " " + item.getValue().getProductName() + " " + item.getValue().getPrice() + " " + item.getValue().getInventoryCount());
 					}
 				}
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
