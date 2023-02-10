@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public interface MonetaryTransactions {
 
-    BigDecimal incrementBalance(BigDecimal amount);
+    void incrementBalance();
 
     BigDecimal decrementBalance();
 

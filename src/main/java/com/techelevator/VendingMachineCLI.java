@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-public class VendingMachineCLI implements MonetaryTransactions {
+public class VendingMachineCLI {
 
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
@@ -23,6 +23,7 @@ public class VendingMachineCLI implements MonetaryTransactions {
 
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT, MAIN_MENU_SECRET_OPTION };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
+
 	private static final Scanner userInput = new Scanner(System.in);
 
 
@@ -31,7 +32,7 @@ public class VendingMachineCLI implements MonetaryTransactions {
 	public VendingMachineCLI(VendingMenu menu) {
 		this.menu = menu;
 	}
-	BigDecimal currentBalance = BigDecimal.valueOf(0.00);
+
 	public void run() {
 		boolean running = true;
 		Map<String, Inventory> inventoryStock = new HashMap<>();
@@ -46,9 +47,10 @@ public class VendingMachineCLI implements MonetaryTransactions {
 				isInventoryStocked = true;
 			}
 
+			//Displays main menu
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
-			// A switch statement could also be used here.  Your choice.
+			//Logic for option 1 from main menu
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
 				for (Map.Entry<String, Inventory> item : inventoryStock.entrySet()) {
@@ -58,23 +60,34 @@ public class VendingMachineCLI implements MonetaryTransactions {
 						System.out.println(item.getKey() + " " + item.getValue().getProductName() + " " + item.getValue().getPrice() + " " + item.getValue().getInventoryCount());
 					}
 				}
+
+			//Logic for option 2 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				BigDecimal currentBalance = BigDecimal.valueOf(0.00);
-				// do purchase
+				BigDecimal currentBalance = BigDecimal.valueOf(0, 2);
+
+				//Displays purchase menu
+				System.out.println();
+				System.out.println("Current Money Provided: $" + currentBalance);
+
 				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 
+				//Logic for option 1 from purchase menu
 				if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)){
 					//execute feed money method
 
 				}
+
+				//Logic for option 2 from purchase menu
 				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)){
 					//execute select product method
 				}
+
+				//Logic for option 3 from purchase menu
 				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)){
 					//execute finish transaction method
 				}
 
-
+			//Logic for option 3 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				running = false;
 			}
@@ -120,21 +133,13 @@ public class VendingMachineCLI implements MonetaryTransactions {
 
 
 
-	@Override
-	public BigDecimal incrementBalance(BigDecimal amount) {
+		/*
+		When the user enters a value, that value needs to increment a balance variable holding the users balance
+			Step 1: Prompt user to feed money in whole dollar amounts
+			Step 2: Allow user to enter amount
+			Step 3: increment user's current balance variable by amount stated in step 2 above.
+		 */
 
-		currentBalance.add(amount);
 
-		return currentBalance;
-	}
 
-	@Override
-	public BigDecimal decrementBalance() {
-		return null;
-	}
-
-	@Override
-	public BigDecimal returnChange() {
-		return null;
-	}
 }
