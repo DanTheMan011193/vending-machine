@@ -4,12 +4,13 @@ import com.techelevator.view.VendingMenu;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 
-public class VendingMachineCLI {
+public class VendingMachineCLI implements MonetaryTransactions {
 
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
@@ -22,13 +23,15 @@ public class VendingMachineCLI {
 
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT, MAIN_MENU_SECRET_OPTION };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
+	private static final Scanner userInput = new Scanner(System.in);
+
 
 	private VendingMenu menu;
 
 	public VendingMachineCLI(VendingMenu menu) {
 		this.menu = menu;
 	}
-
+	BigDecimal currentBalance = BigDecimal.valueOf(0.00);
 	public void run() {
 		boolean running = true;
 		Map<String, Inventory> inventoryStock = new HashMap<>();
@@ -54,12 +57,21 @@ public class VendingMachineCLI {
 					}
 				}
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
+				BigDecimal currentBalance = BigDecimal.valueOf(0.00);
 				// do purchase
 				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+				BigDecimal userDeposit = null;
+				try (userInput) {
+					userDeposit = new BigDecimal(userInput.nextLine());
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+				incrementBalance(userDeposit);
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				running = false;
 			}
 		}
+
 	}
 
 	public static void main(String[] args) {
@@ -94,5 +106,25 @@ public class VendingMachineCLI {
 			System.out.println(e.getMessage());
 		}
 		return stock;
+	}
+
+
+
+	@Override
+	public BigDecimal incrementBalance(BigDecimal amount) {
+
+			currentBalance.add(amount);
+
+		return currentBalance;
+	}
+
+	@Override
+	public BigDecimal decrementBalance() {
+		return null;
+	}
+
+	@Override
+	public BigDecimal returnChange() {
+		return null;
 	}
 }
