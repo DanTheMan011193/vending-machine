@@ -3,6 +3,7 @@ package com.techelevator.view;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class VendingMenu {
@@ -49,5 +50,17 @@ public class VendingMenu {
 		}
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
+	}
+
+	public BigDecimal getDepositAmountFromUserInput(Scanner input) {
+		System.out.println("Feed money in whole dollar amounts");
+
+		BigDecimal userInput = input.nextBigDecimal();
+		return userInput;
+	}
+
+	public String getProductSelectionFromUserInput(Scanner input) {
+		String productSlot = input.nextLine();
+		return productSlot;
 	}
 }

@@ -24,8 +24,7 @@ public class VendingMachineCLI {
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT, MAIN_MENU_SECRET_OPTION };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
 
-	private static final Scanner userInput = new Scanner(System.in);
-
+	public static final Scanner userInput = new Scanner(System.in);
 
 	private VendingMenu menu;
 
@@ -35,6 +34,8 @@ public class VendingMachineCLI {
 
 	public void run() {
 		boolean running = true;
+		boolean purchasing = true;
+		VendingMachine vendingMachine = new VendingMachine();
 		Map<String, Inventory> inventoryStock = new HashMap<>();
 		boolean isInventoryStocked = false;
 
@@ -64,29 +65,41 @@ public class VendingMachineCLI {
 			//Logic for option 2 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 
+				while(purchasing) {
+					//Displays purchase menu
+					System.out.println();
+					System.out.println("Current Money Provided: $" + vendingMachine.getCurrentBalance());
 
-				//Displays purchase menu
-				System.out.println();
-				//System.out.println("Current Money Provided: $" + currentBalance);
+					String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 
-				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+					//Logic for option 1 from purchase menu
+					if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
+						//execute feed money method
+						vendingMachine.incrementBalance(menu.getDepositAmountFromUserInput(userInput));
+					}
 
-				//Logic for option 1 from purchase menu
-				if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)){
-					//execute feed money method
+					//Logic for option 2 from purchase menu
+					else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
 
+						for (Map.Entry<String, Inventory> item : inventoryStock.entrySet()) {
+							if (item.getValue().getInventoryCount() == 0) {
+								System.out.println(item.getKey() + item.getValue().getProductName() + item.getValue().getPrice() + item.getValue().getSOLD_OUT());
+							} else {
+								System.out.println(item.getKey() + " " + item.getValue().getProductName() + " " + item.getValue().getPrice() + " " + item.getValue().getInventoryCount());
+							}
+
+						}
+						//execute select product method
+						menu.getProductSelectionFromUserInput(userInput);
+					}
+
+					//Logic for option 3 from purchase menu
+					else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
+						//execute finish transaction method
+
+						purchasing = false;
+					}
 				}
-
-				//Logic for option 2 from purchase menu
-				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)){
-					//execute select product method
-				}
-
-				//Logic for option 3 from purchase menu
-				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)){
-					//execute finish transaction method
-				}
-
 			//Logic for option 3 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				running = false;

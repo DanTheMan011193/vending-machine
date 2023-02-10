@@ -3,14 +3,14 @@ package com.techelevator;
 import java.math.BigDecimal;
 import java.util.Scanner;
 
-public class PointOfSales {
+public abstract class PointOfSalesSystem {
 
     private BigDecimal currentBalance;
     private BigDecimal feedMoney;
     private BigDecimal salesTotal;
-    private final Scanner userInput = new Scanner(System.in);
 
-    public PointOfSales() {
+
+    public PointOfSalesSystem() {
         this.currentBalance = BigDecimal.valueOf(0,2);
         this.feedMoney = BigDecimal.valueOf(0,2);
         this.salesTotal = BigDecimal.valueOf(0,2);
@@ -43,7 +43,7 @@ public class PointOfSales {
 
     //methods
 
-    public void incrementBalance(){
+    public void incrementBalance(BigDecimal deposit){
             /*
 		When the user enters a value, that value needs to increment a balance variable holding the users balance
 			Step 1: Prompt user to feed money in whole dollar amounts
@@ -51,16 +51,10 @@ public class PointOfSales {
 			Step 3: increment user's current balance variable by amount stated in step 2 above.
 		 */
 
-        System.out.println("Feed money in whole dollar amounts");
 
-        try (userInput){
+            setCurrentBalance(getCurrentBalance().add(deposit));
+            setFeedMoney(deposit);
 
-            BigDecimal amountDeposited = new BigDecimal(String.valueOf(userInput));
-           currentBalance.add(amountDeposited);
-           feedMoney.add(amountDeposited);
-        }catch (IllegalArgumentException e){
-            e.getMessage();
-        }
 
 
     }
