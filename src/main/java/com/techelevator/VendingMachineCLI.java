@@ -39,6 +39,8 @@ public class VendingMachineCLI implements MonetaryTransactions {
 
 		while (running) {
 
+			//if statement checks if the inventory has been stocked in the vending machine
+			//if not it stocks th inventory and sets the boolean to true
 			if (!isInventoryStocked) {
 				stockInventory(inventoryStock, "vendingmachine.csv");
 				isInventoryStocked = true;
@@ -60,13 +62,19 @@ public class VendingMachineCLI implements MonetaryTransactions {
 				BigDecimal currentBalance = BigDecimal.valueOf(0.00);
 				// do purchase
 				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-				BigDecimal userDeposit = null;
-				try (userInput) {
-					userDeposit = new BigDecimal(userInput.nextLine());
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
+
+				if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)){
+					//execute feed money method
+
 				}
-				incrementBalance(userDeposit);
+				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)){
+					//execute select product method
+				}
+				else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)){
+					//execute finish transaction method
+				}
+
+
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				running = false;
 			}
@@ -91,6 +99,8 @@ public class VendingMachineCLI implements MonetaryTransactions {
 
 	 */
 
+
+	//puts file data in map
 	private static Map<String, Inventory> stockInventory(Map<String, Inventory> stock, String inventorySourcePath) {
 		File inventoryFile = new File(inventorySourcePath);
 
@@ -113,7 +123,7 @@ public class VendingMachineCLI implements MonetaryTransactions {
 	@Override
 	public BigDecimal incrementBalance(BigDecimal amount) {
 
-			currentBalance.add(amount);
+		currentBalance.add(amount);
 
 		return currentBalance;
 	}
