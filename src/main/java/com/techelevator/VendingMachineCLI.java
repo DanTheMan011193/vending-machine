@@ -63,11 +63,11 @@ public class VendingMachineCLI {
 
 			//Logic for option 2 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				BigDecimal currentBalance = BigDecimal.valueOf(0, 2);
+
 
 				//Displays purchase menu
 				System.out.println();
-				System.out.println("Current Money Provided: $" + currentBalance);
+				//System.out.println("Current Money Provided: $" + currentBalance);
 
 				String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 
@@ -133,12 +133,7 @@ public class VendingMachineCLI {
 
 
 
-		/*
-		When the user enters a value, that value needs to increment a balance variable holding the users balance
-			Step 1: Prompt user to feed money in whole dollar amounts
-			Step 2: Allow user to enter amount
-			Step 3: increment user's current balance variable by amount stated in step 2 above.
-		 */
+
 
 
 
