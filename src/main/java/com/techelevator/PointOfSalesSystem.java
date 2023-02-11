@@ -59,8 +59,9 @@ public abstract class PointOfSalesSystem {
 
     }
 
-    public void decrementBalance(){
-
+    public void decrementBalance(BigDecimal productCost){
+           setCurrentBalance(getCurrentBalance().subtract(productCost));
+           setFeedMoney(productCost);
     }
 
     public BigDecimal dispenseChange(){

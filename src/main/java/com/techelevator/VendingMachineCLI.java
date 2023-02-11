@@ -25,7 +25,7 @@ public class VendingMachineCLI {
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
 
 	public static final Scanner userInput = new Scanner(System.in);
-
+	VendingMachine vendingMachine = new VendingMachine();
 	private VendingMenu menu;
 
 	public VendingMachineCLI(VendingMenu menu) {
@@ -35,7 +35,7 @@ public class VendingMachineCLI {
 	public void run() {
 		boolean running = true;
 		boolean purchasing = true;
-		VendingMachine vendingMachine = new VendingMachine();
+
 		Map<String, Inventory> inventoryStock = new HashMap<>();
 		boolean isInventoryStocked = false;
 
@@ -90,7 +90,23 @@ public class VendingMachineCLI {
 
 						}
 						//execute select product method
-						menu.getProductSelectionFromUserInput(userInput);
+						String slotSelection = menu.getProductSelectionFromUserInput(userInput);
+
+						if (!inventoryStock.containsKey(slotSelection)){
+							System.out.println("Product code doesn't exist.");
+						}
+						else if (inventoryStock.get(slotSelection).getInventoryCount() == 0){
+							System.out.println("Product is sold out.");
+						}
+						else if (inventoryStock.get(slotSelection).getPrice().compareTo(vendingMachine.getCurrentBalance()) == 1){
+							System.out.println("Insufficient funds");
+						}
+						else {
+							vendingMachine.decrementBalance(inventoryStock.get(slotSelection).getPrice());
+							dispenseItem(inventoryStock, slotSelection);
+							decrementInventory(inventoryStock, slotSelection);
+						}
+
 					}
 
 					//Logic for option 3 from purchase menu
@@ -145,9 +161,35 @@ public class VendingMachineCLI {
 	}
 
 
+	public void decrementInventory(Map<String, Inventory> map,  String slotSelection){
+		map.get(slotSelection).setInventoryCount(map.get(slotSelection).getInventoryCount() - 1);
+	}
+
+	public void dispenseItem(Map<String, Inventory> map,  String slotSelection){
+		String dispensedItem = map.get(slotSelection).getProductName();
+		BigDecimal itemCost = map.get(slotSelection).getPrice();
+		String message;
+
+		if (map.get(slotSelection).getType().equals("Chip")){
+			message = "Crunch Crunch, It's Yummy!";
+		}
+		else if (map.get(slotSelection).getType().equals("Candy")){
+			message = "Munch Munch, Mmm Mmm Good!";
+		}
+		else if (map.get(slotSelection).getType().equals("Drink")){
+			message = "Glug Glug, Chug Chug!";
+		}
+		else{
+			message = "Chew Chew, Pop!";
+		}
 
 
 
+
+
+				System.out.println(dispensedItem + " " + itemCost + " " +
+				vendingMachine.getCurrentBalance() + " " + message);
+	}
 
 
 }
