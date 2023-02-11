@@ -1,18 +1,17 @@
 package com.techelevator;
 
 import java.math.BigDecimal;
-import java.util.Scanner;
 
 public abstract class PointOfSalesSystem {
 
     private BigDecimal currentBalance;
-    private BigDecimal feedMoney;
+    private BigDecimal lastTransaction;
     private BigDecimal salesTotal;
 
 
     public PointOfSalesSystem() {
         this.currentBalance = BigDecimal.valueOf(0,2);
-        this.feedMoney = BigDecimal.valueOf(0,2);
+        this.lastTransaction = BigDecimal.valueOf(0,2);
         this.salesTotal = BigDecimal.valueOf(0,2);
 
     }
@@ -25,12 +24,12 @@ public abstract class PointOfSalesSystem {
         this.currentBalance = currentBalance;
     }
 
-    public BigDecimal getFeedMoney() {
-        return feedMoney;
+    public BigDecimal getLastTransaction() {
+        return lastTransaction;
     }
 
-    public void setFeedMoney(BigDecimal feedMoney) {
-        this.feedMoney = feedMoney;
+    public void setLastTransaction(BigDecimal lastTransaction) {
+        this.lastTransaction = lastTransaction;
     }
 
     public BigDecimal getSalesTotal() {
@@ -53,7 +52,7 @@ public abstract class PointOfSalesSystem {
 
 
             setCurrentBalance(getCurrentBalance().add(deposit));
-            setFeedMoney(deposit);
+            setLastTransaction(deposit);
 
 
 
@@ -61,22 +60,23 @@ public abstract class PointOfSalesSystem {
 
     public void decrementBalance(BigDecimal productCost){
            setCurrentBalance(getCurrentBalance().subtract(productCost));
-           setFeedMoney(productCost);
+           setLastTransaction(productCost);
     }
 
     public String dispenseChange(){
         BigDecimal quarter = BigDecimal.valueOf(0.25);
         BigDecimal dime = BigDecimal.valueOf(0.10);
         BigDecimal nickel = BigDecimal.valueOf(0.05);
-        setFeedMoney(getFeedMoney().add(getCurrentBalance()));
+        setLastTransaction(getCurrentBalance());
         int[] numberOfCoins = new int[3];
 
+
         while (!getCurrentBalance().equals(BigDecimal.ZERO)){
-            if (getCurrentBalance().remainder(quarter).equals(BigDecimal.ZERO)){
+            if (getCurrentBalance().remainder(quarter).equals(BigDecimal.valueOf(0, 2))){
                 numberOfCoins[0] = getCurrentBalance().divide(quarter).intValue();
                 setCurrentBalance(BigDecimal.ZERO);
             }
-            else if (getCurrentBalance().remainder(dime).equals(BigDecimal.ZERO)){
+            else if (getCurrentBalance().remainder(quarter).remainder(dime).equals(BigDecimal.valueOf(0,2))){
                 numberOfCoins[1]++;
                 setCurrentBalance(getCurrentBalance().subtract(dime));
             }

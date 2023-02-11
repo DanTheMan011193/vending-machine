@@ -67,26 +67,39 @@ public class VendingMenu {
 		return productSlot;
 	}
 
-	public void logTransactions(String item, String itemCode, BigDecimal amount, BigDecimal balance) {
+	public void logPurchaseTransaction(String item, String itemCode, BigDecimal amount, BigDecimal balance) {
 		// Perform the transaction
 
 
 		try (FileWriter writer = new FileWriter(LOG_FILE, true)) {
 
-			writer.write(DATE_FORMAT.format(new Date()) + " " + item + " " + itemCode + ": $" + amount + " $" + balance + "\n");
+			writer.write(DATE_FORMAT.format(new Date()) + " " + item + " " + itemCode + " $" + amount + " $" + balance + "\n");
 
 		} catch (IOException e) {
 			System.err.println("Error writing to log file: " + e.getMessage());
 		}
 	}
 
-	public void logTransactions(BigDecimal amount, BigDecimal balance) {
+	public void logDepositTransaction(BigDecimal amount, BigDecimal balance) {
 		// Perform the transaction
 
 
 		try (FileWriter writer = new FileWriter(LOG_FILE, true)) {
 
-			writer.write(DATE_FORMAT.format(new Date()) + " " + ": $" + amount + " $" + balance + "\n");
+			writer.write(DATE_FORMAT.format(new Date()) + " " + "FEED MONEY: $" + amount + " $" + balance + "\n");
+
+		} catch (IOException e) {
+			System.err.println("Error writing to log file: " + e.getMessage());
+		}
+	}
+
+	public void logCashOutTransaction(BigDecimal amount, BigDecimal balance) {
+		// Perform the transaction
+
+
+		try (FileWriter writer = new FileWriter(LOG_FILE, true)) {
+
+			writer.write(DATE_FORMAT.format(new Date()) + " " + "GIVE CHANGE: $" + amount + " $" + balance + "\n");
 
 		} catch (IOException e) {
 			System.err.println("Error writing to log file: " + e.getMessage());

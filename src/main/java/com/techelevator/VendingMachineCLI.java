@@ -76,7 +76,7 @@ public class VendingMachineCLI {
 					if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
 						//execute feed money method
 						vendingMachine.incrementBalance(menu.getDepositAmountFromUserInput(userInput));
-						menu.logTransactions(vendingMachine.getFeedMoney(), vendingMachine.getCurrentBalance());
+						menu.logDepositTransaction(vendingMachine.getLastTransaction(), vendingMachine.getCurrentBalance());
 					}
 
 					//Logic for option 2 from purchase menu
@@ -106,7 +106,7 @@ public class VendingMachineCLI {
 							vendingMachine.decrementBalance(inventoryStock.get(slotSelection).getPrice());
 							dispenseItem(inventoryStock, slotSelection);
 							decrementInventory(inventoryStock, slotSelection);
-							menu.logTransactions(inventoryStock.get(slotSelection).getProductName(), slotSelection, inventoryStock.get(slotSelection).getPrice(), vendingMachine.getCurrentBalance());
+							menu.logPurchaseTransaction(inventoryStock.get(slotSelection).getProductName(), slotSelection, inventoryStock.get(slotSelection).getPrice(), vendingMachine.getCurrentBalance());
 						}
 
 					}
@@ -116,6 +116,7 @@ public class VendingMachineCLI {
 						//execute finish transaction method
 
 						String result = vendingMachine.dispenseChange();
+						menu.logCashOutTransaction(vendingMachine.getLastTransaction(), vendingMachine.getCurrentBalance());
 						System.out.println(result);
 
 						running = true;
