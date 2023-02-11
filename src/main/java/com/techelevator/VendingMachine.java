@@ -19,7 +19,10 @@ public class VendingMachine extends PointOfSalesSystem {
     }
 
 
+public String dispenseChange(){
+       return super.dispenseChange();
 
+}
 
 
 }

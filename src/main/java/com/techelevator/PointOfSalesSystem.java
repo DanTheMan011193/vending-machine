@@ -64,9 +64,35 @@ public abstract class PointOfSalesSystem {
            setFeedMoney(productCost);
     }
 
-    public BigDecimal dispenseChange(){
-        return null;
+    public String dispenseChange(){
+        BigDecimal quarter = BigDecimal.valueOf(0.25);
+        BigDecimal dime = BigDecimal.valueOf(0.10);
+        BigDecimal nickel = BigDecimal.valueOf(0.05);
+        setFeedMoney(getFeedMoney().add(getCurrentBalance()));
+        int[] numberOfCoins = new int[3];
+
+        while (!getCurrentBalance().equals(BigDecimal.ZERO)){
+            if (getCurrentBalance().remainder(quarter).equals(BigDecimal.ZERO)){
+                numberOfCoins[0] = getCurrentBalance().divide(quarter).intValue();
+                setCurrentBalance(BigDecimal.ZERO);
+            }
+            else if (getCurrentBalance().remainder(dime).equals(BigDecimal.ZERO)){
+                numberOfCoins[1]++;
+                setCurrentBalance(getCurrentBalance().subtract(dime));
+            }
+            else {
+                numberOfCoins[2]++;
+                setCurrentBalance(getCurrentBalance().subtract(nickel));
+            }
+        }
+
+
+
+        return String.format("Your change is %d quarters, %d dimes and %d nickels.%n", numberOfCoins[0], numberOfCoins[1], numberOfCoins[2]);
     }
+
+
+
 
 
 

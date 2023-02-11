@@ -34,7 +34,7 @@ public class VendingMachineCLI {
 
 	public void run() {
 		boolean running = true;
-		boolean purchasing = true;
+
 
 		Map<String, Inventory> inventoryStock = new HashMap<>();
 		boolean isInventoryStocked = false;
@@ -64,8 +64,8 @@ public class VendingMachineCLI {
 
 			//Logic for option 2 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-
-				while(purchasing) {
+					running = false;
+				while(!running) {
 					//Displays purchase menu
 					System.out.println();
 					System.out.println("Current Money Provided: $" + vendingMachine.getCurrentBalance());
@@ -76,6 +76,7 @@ public class VendingMachineCLI {
 					if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
 						//execute feed money method
 						vendingMachine.incrementBalance(menu.getDepositAmountFromUserInput(userInput));
+						menu.logTransactions(vendingMachine.getFeedMoney(), vendingMachine.getCurrentBalance());
 					}
 
 					//Logic for option 2 from purchase menu
@@ -105,6 +106,7 @@ public class VendingMachineCLI {
 							vendingMachine.decrementBalance(inventoryStock.get(slotSelection).getPrice());
 							dispenseItem(inventoryStock, slotSelection);
 							decrementInventory(inventoryStock, slotSelection);
+							menu.logTransactions(inventoryStock.get(slotSelection).getProductName(), slotSelection, inventoryStock.get(slotSelection).getPrice(), vendingMachine.getCurrentBalance());
 						}
 
 					}
@@ -113,7 +115,10 @@ public class VendingMachineCLI {
 					else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
 						//execute finish transaction method
 
-						purchasing = false;
+						String result = vendingMachine.dispenseChange();
+						System.out.println(result);
+
+						running = true;
 					}
 				}
 			//Logic for option 3 from main menu
