@@ -2,7 +2,7 @@ package com.techelevator;
 
 import java.math.BigDecimal;
 
-public abstract class PointOfSalesSystem {
+public class PointOfSalesSystem {
 
     private BigDecimal currentBalance;
     private BigDecimal lastTransaction;
@@ -15,7 +15,8 @@ public abstract class PointOfSalesSystem {
         this.salesTotal = BigDecimal.valueOf(0,2);
 
     }
-        //getters and setters
+
+    //getters and setters
     public BigDecimal getCurrentBalance() {
         return currentBalance;
     }
@@ -41,21 +42,9 @@ public abstract class PointOfSalesSystem {
     }
 
     //methods
-
     public void incrementBalance(BigDecimal deposit){
-            /*
-		When the user enters a value, that value needs to increment a balance variable holding the users balance
-			Step 1: Prompt user to feed money in whole dollar amounts
-			Step 2: Allow user to enter amount
-			Step 3: increment user's current balance variable by amount stated in step 2 above.
-		 */
-
-
             setCurrentBalance(getCurrentBalance().add(deposit));
             setLastTransaction(deposit);
-
-
-
     }
 
     public void decrementBalance(BigDecimal productCost){
@@ -69,7 +58,6 @@ public abstract class PointOfSalesSystem {
         BigDecimal nickel = BigDecimal.valueOf(0.05);
         setLastTransaction(getCurrentBalance());
         int[] numberOfCoins = new int[3];
-
 
         while (!getCurrentBalance().equals(BigDecimal.ZERO)){
             if (getCurrentBalance().remainder(quarter).equals(BigDecimal.valueOf(0, 2))){
@@ -85,9 +73,6 @@ public abstract class PointOfSalesSystem {
                 setCurrentBalance(getCurrentBalance().subtract(nickel));
             }
         }
-
-
-
         return String.format("Your change is %d quarters, %d dimes and %d nickels.%n", numberOfCoins[0], numberOfCoins[1], numberOfCoins[2]);
     }
 

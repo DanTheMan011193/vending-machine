@@ -2,7 +2,14 @@ package com.techelevator.view;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import com.techelevator.view.VendingMenu;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +20,7 @@ import org.junit.runners.MethodSorters;
 public class MenuTest {
 
 	private ByteArrayOutputStream output;
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 
 	@Before
 	public void setup() {
@@ -85,6 +93,96 @@ public class MenuTest {
 		String expected = menuDisplay + System.lineSeparator() + "*** Mickey Mouse is not a valid option ***" + System.lineSeparator() + System.lineSeparator() + menuDisplay;
 
 		Assert.assertEquals(expected, output.toString());
+	}
+
+	@Test
+	public void returns_BigDecimal_depositAmount_corresponding_to_userInput() {
+		//Arrange
+		BigDecimal expectedResult = new BigDecimal("100");
+		VendingMenu menu = getMenuForTestingWithUserInput("100");
+
+		//Act
+		BigDecimal actualResult = menu.getDepositAmount();
+
+		//Assert
+		Assert.assertEquals(expectedResult,actualResult);
+	}
+
+	@Test
+	public void returns_String_productSelection_corresponding_to_userInput() {
+		//Arrange
+		String expectedResult = "A2";
+		VendingMenu menu = getMenuForTestingWithUserInput("A2");
+
+		//Act
+		String actualResult = menu.getProductSelection();
+
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	public void returns_expectedResult_format_corresponding_to_receipt_fields_entered() {
+		//Arrange
+		String[] test = {"testName", "0.00", "0.00", "test"};
+		VendingMenu testMenu = getMenuForTesting();
+		String expectedResult = System.lineSeparator() + String.format("Product: %s%n" +
+						"Price: $%s%n" +
+						"Balance remaining: $%s%n" +
+						"%s%n",
+				test[0], test[1], test[2], test[3]);
+
+		//Act
+		testMenu.getReceipt(test);
+
+		//Assert
+		Assert.assertEquals(expectedResult, output.toString());
+	}
+
+	@Test
+	public void returns_expectedResult_purchaseInformation_corresponding_to_log_info_entered() throws IOException {
+		//Arrange
+		VendingMenu testMenu = getMenuForTesting();
+		String expectedResult = Files.readString(Path.of("log.txt")) + DATE_FORMAT.format(new Date()) + " " + "test" + " " + "itemCode" + " $" + "1.00" + " $" + "1.00" + "\n";
+
+		//Act
+		testMenu.logPurchaseTransaction("test", "itemCode", new BigDecimal("1.00"), new BigDecimal("1.00"));
+
+		//Assert
+		Assert.assertTrue(Files.exists(Path.of("log.txt")));
+		String actualResult = Files.readString(Path.of("log.txt"));
+		Assert.assertEquals(expectedResult.trim(), actualResult.trim());
+
+	}
+
+	@Test
+	public void returns_expectedResult_depositInformation_corresponding_to_log_info_entered() throws IOException {
+		//Arrange
+		VendingMenu testMenu = getMenuForTesting();
+		String expectedResult = Files.readString(Path.of("log.txt")) + DATE_FORMAT.format(new Date()) + " " + "FEED MONEY: $" + "1.00" + " $" + "1.00" + "\n";
+
+		//Act
+		testMenu.logDepositTransaction(new BigDecimal("1.00"), new BigDecimal("1.00"));
+
+		//Assert
+		Assert.assertTrue(Files.exists(Path.of("log.txt")));
+		String actualResult = Files.readString(Path.of("log.txt"));
+		Assert.assertEquals(expectedResult.trim(), actualResult.trim());
+	}
+
+	@Test
+	public void returns_expectedResult_cashOutInformation_corresponding_to_log_info_entered() throws IOException {
+		//Arrange
+		VendingMenu testMenu = getMenuForTesting();
+		String expectedResult = Files.readString(Path.of("log.txt")) + DATE_FORMAT.format(new Date()) + " " + "GIVE CHANGE: $" + "1.00" + " $" + "1.00" + "\n";
+
+		//Act
+		testMenu.logCashOutTransaction(new BigDecimal("1.00"), new BigDecimal("1.00"));
+
+		//Assert
+		Assert.assertTrue(Files.exists(Path.of("log.txt")));
+		String actualResult = Files.readString(Path.of("log.txt"));
+		Assert.assertEquals(expectedResult.trim(), actualResult.trim());
 	}
 
 	private VendingMenu getMenuForTestingWithUserInput(String userInput) {

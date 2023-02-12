@@ -15,17 +15,16 @@ public class VendingMachineCLI {
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
-	private static final String MAIN_MENU_SECRET_OPTION = "*Sales Report";
 
 	private static final String PURCHASE_MENU_OPTION_FEED_MONEY = "Feed Money";
 	private static final String PURCHASE_MENU_OPTION_SELECT_PRODUCT = "Select Product";
 	private static final String PURCHASE_MENU_OPTION_FINISH_TRANSACTION = "Finish Transaction";
 
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT, MAIN_MENU_SECRET_OPTION };
+	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
 
-	public static final Scanner userInput = new Scanner(System.in);
-	VendingMachine vendingMachine = new VendingMachine();
+	PointOfSalesSystem vendingMachine = new PointOfSalesSystem();
+
 	private VendingMenu menu;
 
 	public VendingMachineCLI(VendingMenu menu) {
@@ -34,8 +33,6 @@ public class VendingMachineCLI {
 
 	public void run() {
 		boolean running = true;
-
-
 		Map<String, Inventory> inventoryStock = new HashMap<>();
 		boolean isInventoryStocked = false;
 
@@ -64,8 +61,10 @@ public class VendingMachineCLI {
 
 			//Logic for option 2 from main menu
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-					running = false;
+				running = false;
+
 				while(!running) {
+
 					//Displays purchase menu
 					System.out.println();
 					System.out.println("Current Money Provided: $" + vendingMachine.getCurrentBalance());
@@ -75,7 +74,7 @@ public class VendingMachineCLI {
 					//Logic for option 1 from purchase menu
 					if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
 						//execute feed money method
-						vendingMachine.incrementBalance(menu.getDepositAmountFromUserInput(userInput));
+						vendingMachine.incrementBalance(menu.getDepositAmount());
 						menu.logDepositTransaction(vendingMachine.getLastTransaction(), vendingMachine.getCurrentBalance());
 					}
 
@@ -90,8 +89,9 @@ public class VendingMachineCLI {
 							}
 
 						}
+
 						//execute select product method
-						String slotSelection = menu.getProductSelectionFromUserInput(userInput);
+						String slotSelection = menu.getProductSelection();
 
 						if (!inventoryStock.containsKey(slotSelection)){
 							System.out.println("Product code doesn't exist.");
@@ -104,13 +104,13 @@ public class VendingMachineCLI {
 						}
 						else {
 							vendingMachine.decrementBalance(inventoryStock.get(slotSelection).getPrice());
-							dispenseItem(inventoryStock, slotSelection);
+							String[] receiptFields = dispenseItem(inventoryStock, slotSelection);
+							menu.getReceipt(receiptFields);
 							decrementInventory(inventoryStock, slotSelection);
 							menu.logPurchaseTransaction(inventoryStock.get(slotSelection).getProductName(), slotSelection, inventoryStock.get(slotSelection).getPrice(), vendingMachine.getCurrentBalance());
 						}
 
 					}
-
 					//Logic for option 3 from purchase menu
 					else if (purchaseChoice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
 						//execute finish transaction method
@@ -136,20 +136,8 @@ public class VendingMachineCLI {
 		cli.run();
 	}
 
-	/*
-	step 1 - open the scanner
-	step 2 - have the scanner read the csv file
-	step 3 - use the split method to separate the line into individual values
-
-	step 4 - assign the individual values the first value as the map string and their remaining
-	values as the inventory attributes
-
-
-	 */
-
-
 	//puts file data in map
-	private static Map<String, Inventory> stockInventory(Map<String, Inventory> stock, String inventorySourcePath) {
+	public Map<String, Inventory> stockInventory(Map<String, Inventory> stock, String inventorySourcePath) {
 		File inventoryFile = new File(inventorySourcePath);
 
 		try (Scanner fileInput = new Scanner(inventoryFile)){
@@ -166,12 +154,11 @@ public class VendingMachineCLI {
 		return stock;
 	}
 
-
 	public void decrementInventory(Map<String, Inventory> map,  String slotSelection){
 		map.get(slotSelection).setInventoryCount(map.get(slotSelection).getInventoryCount() - 1);
 	}
 
-	public void dispenseItem(Map<String, Inventory> map,  String slotSelection){
+	public String[] dispenseItem(Map<String, Inventory> map,  String slotSelection){
 		String dispensedItem = map.get(slotSelection).getProductName();
 		BigDecimal itemCost = map.get(slotSelection).getPrice();
 		String message;
@@ -189,13 +176,8 @@ public class VendingMachineCLI {
 			message = "Chew Chew, Pop!";
 		}
 
+		String[] receiptFields = {dispensedItem, String.valueOf(itemCost), String.valueOf(vendingMachine.getCurrentBalance()), message};
 
-
-
-
-				System.out.println(dispensedItem + " " + itemCost + " " +
-				vendingMachine.getCurrentBalance() + " " + message);
+		return receiptFields;
 	}
-
-
 }

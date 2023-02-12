@@ -55,15 +55,32 @@ public class VendingMenu {
 		out.flush();
 	}
 
-	public BigDecimal getDepositAmountFromUserInput(Scanner input) {
-		System.out.println("Feed money in whole dollar amounts");
-
-		BigDecimal userInput = input.nextBigDecimal();
-		return userInput;
+	public BigDecimal getDepositAmount() {
+		return getDepositAmountFromUserInput();
 	}
 
-	public String getProductSelectionFromUserInput(Scanner input) {
-		String productSlot = input.nextLine();
+	private BigDecimal getDepositAmountFromUserInput() {
+		BigDecimal depositAmount = new BigDecimal(0);
+		out.println();
+		out.println("Feed money in whole dollar amounts.");
+		out.flush();
+		try {
+			depositAmount = new BigDecimal(in.nextLine());
+		} catch (Exception e) {
+			out.println();
+			out.println("Please enter a numerical whole dollar amount.");
+			out.flush();
+		}
+		return depositAmount;
+	}
+
+	public String getProductSelection() {
+		String selection = getProductSelectionFromUserInput();
+		return selection;
+	}
+
+	private String getProductSelectionFromUserInput() {
+		String productSlot = in.nextLine();
 		return productSlot;
 	}
 
@@ -106,4 +123,18 @@ public class VendingMenu {
 		}
 	}
 
+	public void getReceipt(String[] receiptFields) {
+		printReceipt(receiptFields);
+	}
+
+	private void printReceipt(String[] receiptFields) {
+		out.println();
+		String receipt = String.format("Product: %s%n" +
+				"Price: $%s%n" +
+				"Balance remaining: $%s%n" +
+				"%s%n",
+				receiptFields[0], receiptFields[1], receiptFields[2], receiptFields[3]);
+		out.print(receipt);
+		out.flush();
+	}
 }
